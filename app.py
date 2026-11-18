@@ -5,6 +5,7 @@ import re
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///barbearia.db"
@@ -114,8 +115,11 @@ def create_appointment():
     name = clean_text(data.get("nome", ""), 120)
     phone = normalize_phone(data.get("telefone", ""))
 
-    if not name or len(name) < 3 or not re.search(r"[A-Za-zÀ-ÿ]", name):
+    name_parts = name.split()
+    if len(name_parts) < 2 or len(name) < 5 or not re.search(r"[A-Za-zÀ-ÿ]", name):
         return jsonify({"error": "Informe seu nome completo."}), 400
+    if not re.fullmatch(r"[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s.'-]*", name):
+        return jsonify({"error": "O nome contém caracteres inválidos."}), 400
     if not phone:
         return jsonify({"error": "Informe um telefone válido com DDD."}), 400
 
@@ -138,9 +142,12 @@ def create_appointment():
                                   customer_name=name, phone=phone)
         db.session.add(appointment)
         db.session.commit()
-    except Exception:
+    except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "Este horário acabou de ser reservado. Escolha outro horário."}), 409
+    except Exception:
+        db.session.rollback()
+        return jsonify({"error": "Erro ao salvar agendamento."}), 500
 
     return jsonify({
         "id": appointment.id,

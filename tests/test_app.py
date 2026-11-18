@@ -49,3 +49,11 @@ def test_occupied_slots(client):
     assert client.post("/api/agendamentos", json=payload).status_code == 201
     response = client.get("/api/agendamentos", query_string={"data": future_date()})
     assert "11:30" in response.get_json()["ocupados"]
+
+
+def test_name_must_be_complete(client):
+    response = client.post("/api/agendamentos", json={
+        "service_id": 1, "data": future_date(), "hora": "14:00",
+        "nome": "João123", "telefone": "11999999999"
+    })
+    assert response.status_code == 400
