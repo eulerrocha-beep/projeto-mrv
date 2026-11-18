@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FAF9F6">
+  <title>Le Nilson Barber</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main id="app" tabindex="-1">
+    <header class="app-header">
+      <a class="brand" href="/" aria-label="Le Nilson Barber — página inicial">
+        <span class="brand-mark" aria-hidden="true">LN</span>
+        <span><strong>Le Nilson Barber</strong><small>Seu estilo, nosso cuidado</small></span>
+      </a>
+    </header>
+
+    <section id="catalogScreen" class="screen" aria-labelledby="catalogTitle">
+      <div class="welcome">
+        <p class="eyebrow">BARBEARIA</p>
+        <h1 id="catalogTitle">Bem-vindo!</h1>
+        <p>Agende seu estilo em minutos.</p>
+      </div>
+      <h2 class="section-title">Escolha seu serviço</h2>
+      <div id="serviceList" class="service-list" aria-live="polite">
+        <p class="loading">Carregando serviços…</p>
+      </div>
+    </section>
+
+    <section id="scheduleScreen" class="screen" hidden aria-labelledby="scheduleTitle">
+      <button class="back-link" type="button" data-action="back">← Voltar aos serviços</button>
+      <h1 id="scheduleTitle" class="page-title">Novo agendamento</h1>
+      <ol class="progress" aria-label="Etapas do agendamento">
+        <li class="active"><span>1</span> Serviço</li><li><span>2</span> Horário</li><li><span>3</span> Dados</li>
+      </ol>
+
+      <form id="appointmentForm" novalidate>
+        <fieldset>
+          <legend>1. Serviço escolhido</legend>
+          <label for="serviceSelect">Serviço</label>
+          <select id="serviceSelect" name="service" required></select>
+          <div id="serviceSummary" class="service-summary"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. Data e horário</legend>
+          <label for="dateInput">Data</label>
+          <input id="dateInput" name="date" type="date" required>
+          <p id="dateHint" class="hint">Escolha uma data a partir de hoje.</p>
+          <div id="timeGrid" class="time-grid" role="radiogroup" aria-label="Horários disponíveis"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. Seus dados</legend>
+          <label for="customerName">Nome completo</label>
+          <input id="customerName" name="nome" type="text" autocomplete="name" minlength="3" required>
+          <label for="customerPhone">Telefone (WhatsApp)</label>
+          <input id="customerPhone" name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(99) 99999-9999" maxlength="15" required>
+        </fieldset>
+
+        <div id="formMessage" class="message" role="alert" hidden></div>
+        <button id="confirmButton" class="primary-button" type="submit">CONFIRMAR AGENDAMENTO</button>
+      </form>
+    </section>
+
+    <section id="successScreen" class="screen" hidden aria-labelledby="successTitle">
+      <div class="success-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 7"/></svg></div>
+      <p class="success-eyebrow">RESERVA REALIZADA</p>
+      <h1 id="successTitle">AGENDAMENTO CONFIRMADO!</h1>
+      <div class="confirmation-card">
+        <h2>Resumo do agendamento</h2>
+        <dl id="appointmentSummary"></dl>
+      </div>
+      <p class="confirmation-note">Enviaremos uma confirmação via WhatsApp em breve.</p>
+      <a class="primary-button" href="/" data-action="home">VOLTAR AO INÍCIO</a>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <a href="/" data-action="home"><span aria-hidden="true">⌂</span><small>Início</small></a>
+    <a href="/" data-action="services"><span aria-hidden="true">✂</span><small>Serviços</small></a>
+    <a href="/agendar" data-action="agenda"><span aria-hidden="true">▦</span><small>Agenda</small></a>
+    <a href="#perfil" data-action="profile"><span aria-hidden="true">●</span><small>Perfil</small></a>
+  </nav>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
